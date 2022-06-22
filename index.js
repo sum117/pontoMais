@@ -1,5 +1,4 @@
 const { Client, LocalAuth } = require('whatsapp-web.js')
-const { CronJob } = require('cron')
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: { executablePath: '/usr/bin/chromium-browser', args: ['--disable-gpu', '--disable-setuid-sandbox', '--no-sandbox', '--no-zygote'] }
@@ -26,14 +25,14 @@ client.on('ready', async () => {
         mentions.push(contact);
         text += `@${participant.id.user} `;
     }
-
-    const horas = new CronJob('00 00 09,12,13,16 * * 1-5',
-        chat.sendMessage(
-            `⚠️ *Hora do Ponto, pessoal!*\n\n➡️ Acesse o site para clicar: https://app2.pontomais.com.br/registrar-ponto\n${text}`,
-            {mentions}
-        )
+    chat.sendMessage(
+        `⚠️ *Hora do Ponto, pessoal!*\n\n➡️ Acesse o site para clicar: https://app2.pontomais.com.br/registrar-ponto\n${text}`,
+        {mentions}
     )
-    horas.start()
+    .then(() =>
+        setTimeout(() => process.kill(process.pid), 60 * 1000)
+    )
+
 })
 
 client.initialize()
